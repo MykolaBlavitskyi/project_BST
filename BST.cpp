@@ -97,3 +97,42 @@ void BST::display(Node* node, int indent) const {
     }
 }
  
+void BST::remove(int value) {
+    remove(root, value);
+}
+
+void BST::remove(Node*& node, int value) {
+    if (node == nullptr) {
+        return; 
+    }
+
+    if (value < node->data) {
+        remove(node->left, value);
+    } else if (value > node->data) {
+        remove(node->right, value);
+    } else {
+        if (node->left == nullptr && node->right == nullptr) {
+            delete node; 
+            node = nullptr;
+        } else if (node->left == nullptr) {
+            Node* temp = node;
+            node = node->right; 
+            delete temp;
+        } else if (node->right == nullptr) {
+            Node* temp = node;
+            node = node->left;
+            delete temp;
+        } else {
+            Node* minNode = findMin(node->right);
+            node->data = minNode->data; 
+            remove(node->right, minNode->data); 
+        }
+    }
+}
+
+Node* BST::findMin(Node* node) {
+    while (node->left != nullptr) {
+        node = node->left;
+    }
+    return node;
+}
