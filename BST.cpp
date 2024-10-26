@@ -1,5 +1,6 @@
 #include <iostream>
 #include "BST.h"
+using namespace std;
 
 BST::BST() : root(nullptr) {}
 
@@ -88,9 +89,9 @@ void BST::display(Node* node, int indent) const {
             display(node->right, indent + 4);
         }
         if (indent) {
-            std::cout << std::string(indent, ' ');
+            cout << string(indent, ' ');
         }
-        std::cout << node->data << "\n";
+        cout << node->data << "\n";
         if (node->left) {
             display(node->left, indent + 4);
         }
@@ -149,4 +150,31 @@ void BST::clear(Node* node) {
         clear(node->right);
         delete node;
     }
+}
+
+
+vector<int> BST::findPath(int value) {
+    vector<int> path;
+    findPath(root, value, path);
+    return path;
+}
+
+bool BST::findPath(Node* node, int value, vector<int>& path) {
+    if (node == nullptr) {
+        return false; 
+    }
+
+    path.push_back(node->data); 
+
+    if (node->data == value) {
+        return true;
+    }
+
+    if ((node->left && findPath(node->left, value, path)) ||
+        (node->right && findPath(node->right, value, path))) {
+        return true;
+    }
+
+    path.pop_back();
+    return false;
 }
