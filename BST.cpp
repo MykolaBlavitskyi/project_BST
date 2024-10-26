@@ -136,3 +136,17 @@ Node* BST::findMin(Node* node) {
     }
     return node;
 }
+
+
+void BST::clear() {
+    clear(root);
+    root = nullptr;
+}
+
+void BST::clear(Node* node) {
+    if (node) {
+        clear(node->left);
+        clear(node->right);
+        delete node;
+    }
+}
