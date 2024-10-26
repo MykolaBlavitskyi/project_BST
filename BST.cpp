@@ -1,5 +1,6 @@
 #include <iostream>
 #include "BST.h"
+using namespace std;
 
 BST::BST() : root(nullptr) {}
 
@@ -88,12 +89,92 @@ void BST::display(Node* node, int indent) const {
             display(node->right, indent + 4);
         }
         if (indent) {
-            std::cout << std::string(indent, ' ');
+            cout << string(indent, ' ');
         }
-        std::cout << node->data << "\n";
+        cout << node->data << "\n";
         if (node->left) {
             display(node->left, indent + 4);
         }
     }
 }
  
+void BST::remove(int value) {
+    remove(root, value);
+}
+
+void BST::remove(Node*& node, int value) {
+    if (node == nullptr) {
+        return; 
+    }
+
+    if (value < node->data) {
+        remove(node->left, value);
+    } else if (value > node->data) {
+        remove(node->right, value);
+    } else {
+        if (node->left == nullptr && node->right == nullptr) {
+            delete node; 
+            node = nullptr;
+        } else if (node->left == nullptr) {
+            Node* temp = node;
+            node = node->right; 
+            delete temp;
+        } else if (node->right == nullptr) {
+            Node* temp = node;
+            node = node->left;
+            delete temp;
+        } else {
+            Node* minNode = findMin(node->right);
+            node->data = minNode->data; 
+            remove(node->right, minNode->data); 
+        }
+    }
+}
+
+Node* BST::findMin(Node* node) {
+    while (node->left != nullptr) {
+        node = node->left;
+    }
+    return node;
+}
+
+
+void BST::clear() {
+    clear(root);
+    root = nullptr;
+}
+
+void BST::clear(Node* node) {
+    if (node) {
+        clear(node->left);
+        clear(node->right);
+        delete node;
+    }
+}
+
+
+vector<int> BST::findPath(int value) {
+    vector<int> path;
+    findPath(root, value, path);
+    return path;
+}
+
+bool BST::findPath(Node* node, int value, vector<int>& path) {
+    if (node == nullptr) {
+        return false; 
+    }
+
+    path.push_back(node->data); 
+
+    if (node->data == value) {
+        return true;
+    }
+
+    if ((node->left && findPath(node->left, value, path)) ||
+        (node->right && findPath(node->right, value, path))) {
+        return true;
+    }
+
+    path.pop_back();
+    return false;
+}
